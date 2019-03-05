@@ -1,12 +1,12 @@
 import React from "react";
 import { MockedProvider } from "react-apollo/test-utils";
-import renderer from "react-test-renderer";
+import { render } from "react-testing-library";
 import wait from "waait";
 
 import Currency, { GET_EXCHANGE_RATES_QUERY } from "./currency";
 
 it("should render without error", () => {
-  renderer.create(
+  render(
     <MockedProvider mocks={[]}>
       <Currency />
     </MockedProvider>
@@ -14,13 +14,12 @@ it("should render without error", () => {
 });
 
 it("should render loading state initially", () => {
-  const component = renderer.create(
+  const {getByText} = render(
     <MockedProvider mocks={[]}>
       <Currency />
     </MockedProvider>
   );
-  const tree = component.toJSON();
-  expect(tree.children).toContain("Loading...");
+  expect(getByText('Loading...')).toBeDefined()
 });
 
 it("should render currency conversions", async () => {
@@ -29,16 +28,15 @@ it("should render currency conversions", async () => {
     result: { data: { rates: [{ currency: "LOL", rate: 999 }] } }
   };
 
-  const component = renderer.create(
+  const {getByText} = render(
     <MockedProvider mocks={[currencyMock]} addTypename={false}>
       <Currency />
     </MockedProvider>
   );
 
-  await wait(0); // wait for response
+  await wait(0);
 
-  const p = component.root.findByType("p");
-  expect(p.children).toContain("LOL: 999");
+  expect(getByText('LOL: 999')).toBeDefined();
 });
 
 it("should show error UI", async () => {
@@ -47,7 +45,7 @@ it("should show error UI", async () => {
     error: new Error("aw shucks")
   };
 
-  const component = renderer.create(
+  const {getByText} = render(
     <MockedProvider mocks={[currencyMock]} addTypename={false}>
       <Currency />
     </MockedProvider>
@@ -55,6 +53,5 @@ it("should show error UI", async () => {
 
   await wait(0); // wait for response
 
-  const tree = component.toJSON();
-  expect(tree.children).toContain("Error :(");
+  expect(getByText('Error :(')).toBeDefined();
 });

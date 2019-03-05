@@ -6,8 +6,6 @@
   "main": "src/index.js",
   "dependencies": {
     "apollo-boost": "0.3.1",
-    "enzyme": "3.9.0",
-    "enzyme-adapter-react-16": "latest",
     "graphql": "latest",
     "graphql-tag": "2.10.1",
     "react": "16.8.3",
